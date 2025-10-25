@@ -1,0 +1,1 @@
+{"version":3,"file":"useTOTPAuthenticator.d.ts","sourceRoot":"","sources":["../../../../../../lib/hooks/account/authenticators/totp/useTOTPAuthenticator.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EACV,yBAAyB,EACzB,2BAA2B,EAC5B,MAAM,uBAAuB,CAAC;AAE/B;;GAEG;AACH,wBAAsB,oBAAoB,IAAI,OAAO,CAAC,yBAAyB,GAAG,2BAA2B,CAAC,CAG7G"}

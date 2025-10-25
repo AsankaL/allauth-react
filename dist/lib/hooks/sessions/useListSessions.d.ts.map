@@ -1,0 +1,1 @@
+{"version":3,"file":"useListSessions.d.ts","sourceRoot":"","sources":["../../../../lib/hooks/sessions/useListSessions.ts"],"names":[],"mappings":"AAAA,OAAO,EAAY,KAAK,cAAc,EAAE,MAAM,uBAAuB,CAAC;AAGtE,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,iBAAiB,CAAC;AAExD;;GAEG;AACH,wBAAgB,eAAe,IAAI,cAAc,CAAC,gBAAgB,CAAC,CAOlE"}

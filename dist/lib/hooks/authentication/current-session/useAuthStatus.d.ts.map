@@ -1,0 +1,1 @@
+{"version":3,"file":"useAuthStatus.d.ts","sourceRoot":"","sources":["../../../../../lib/hooks/authentication/current-session/useAuthStatus.ts"],"names":[],"mappings":"AAAA,OAAO,EAAY,KAAK,cAAc,EAAE,MAAM,uBAAuB,CAAC;AAGtE,OAAO,KAAK,EACV,qBAAqB,EACrB,wBAAwB,EACzB,MAAM,oBAAoB,CAAC;AAE5B;;GAEG;AACH,wBAAgB,aAAa,IAAI,cAAc,CAAC,qBAAqB,GAAG,wBAAwB,CAAC,CAOhG"}

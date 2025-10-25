@@ -1,0 +1,1 @@
+{"version":3,"file":"useWebAuthnLoginOptions.d.ts","sourceRoot":"","sources":["../../../../../lib/hooks/authentication/webauthn/useWebAuthnLoginOptions.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,gCAAgC,EAAE,MAAM,oBAAoB,CAAC;AAE3E;;GAEG;AACH,wBAAsB,uBAAuB,IAAI,OAAO,CAAC,gCAAgC,CAAC,CAGzF"}

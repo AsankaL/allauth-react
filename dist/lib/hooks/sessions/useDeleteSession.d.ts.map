@@ -1,0 +1,1 @@
+{"version":3,"file":"useDeleteSession.d.ts","sourceRoot":"","sources":["../../../../lib/hooks/sessions/useDeleteSession.ts"],"names":[],"mappings":"AAAA,OAAO,EAA+B,KAAK,iBAAiB,EAAE,MAAM,uBAAuB,CAAC;AAI5F,OAAO,KAAK,EAAE,gBAAgB,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAEvE;;GAEG;AACH,wBAAgB,gBAAgB,IAAI,iBAAiB,CACnD,gBAAgB,EAChB,aAAa,EACb,MAAM,GAAG,SAAS,CACnB,CA4BA"}
