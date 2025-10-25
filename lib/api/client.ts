@@ -127,7 +127,7 @@ export class AllauthClient {
     // Handle CSRF token for non-GET requests
     if (options.method !== "GET" && options.method !== undefined) {
       let csrfToken: string | null = null;
-      
+
       // If CSRF endpoint is provided, fetch from there
       if (this.csrfTokenUrl) {
         csrfToken = await this.fetchCSRFToken();
@@ -135,7 +135,7 @@ export class AllauthClient {
         // Otherwise, try to get it from cookies (for Django-served frontends)
         csrfToken = await this.storage.getCSRFToken();
       }
-      
+
       if (csrfToken) {
         headers.set("X-CSRFToken", csrfToken);
         await this.storage.setCSRFToken(csrfToken);
@@ -183,12 +183,12 @@ export class AllauthClient {
     const url = path.startsWith('http') ? path : `${this.clientPath}${path}`;
     const response = await this.fetch(url, options);
     const data = await response.json();
-    
+
     // For error responses, throw the error so TanStack Query treats it as a failure
     if (!response.ok && data.errors) {
       throw data;
     }
-    
+
     return data as T;
   }
 
@@ -243,7 +243,7 @@ export class AllauthClient {
   }
 
   async reauthenticate(data: ReauthenticateRequest): Promise<
-    AuthenticatedResponse > {
+    AuthenticatedResponse> {
     return this.request<AuthenticatedResponse>(
       '/auth/reauthenticate',
       {
@@ -285,12 +285,12 @@ export class AllauthClient {
   // Email Management
   // ============================================================================
 
-  async listEmailAddresses(): Promise<EmailAddressesResponse > {
+  async listEmailAddresses(): Promise<EmailAddressesResponse> {
     return this.request<EmailAddressesResponse>('/account/email');
   }
 
   async addEmailAddress(data: EmailAddressRequest): Promise<
-    EmailAddressesResponse > {
+    EmailAddressesResponse> {
     return this.request<EmailAddressesResponse>(
       '/account/email',
       {
@@ -301,7 +301,7 @@ export class AllauthClient {
   }
 
   async removeEmailAddress(data: EmailAddressRequest): Promise<
-    EmailAddressesResponse > {
+    EmailAddressesResponse> {
     return this.request<EmailAddressesResponse>(
       '/account/email',
       {
@@ -312,7 +312,7 @@ export class AllauthClient {
   }
 
   async changePrimaryEmailAddress(data: EmailPrimaryRequest): Promise<
-    EmailAddressesResponse > {
+    EmailAddressesResponse> {
     return this.request<EmailAddressesResponse>(
       '/account/email',
       {
@@ -323,7 +323,7 @@ export class AllauthClient {
   }
 
   async requestEmailVerification(data: EmailAddressRequest): Promise<
-    { status: 200 } > {
+    { status: 200 }> {
     return this.request<{ status: 200 }>(
       '/account/email',
       {
@@ -334,7 +334,7 @@ export class AllauthClient {
   }
 
   async getEmailVerificationInfo(key: string): Promise<
-    EmailVerificationInfoResponse > {
+    EmailVerificationInfoResponse> {
     return this.request<EmailVerificationInfoResponse>(
       `/auth/email/verify?key=${encodeURIComponent(key)}`
     );
@@ -352,7 +352,7 @@ export class AllauthClient {
     );
   }
 
-  async resendEmailVerification(): Promise<{ status: 200 } > {
+  async resendEmailVerification(): Promise<{ status: 200 }> {
     return this.request<{ status: 200 }>(
       '/auth/email/verify/resend',
       {
@@ -365,12 +365,12 @@ export class AllauthClient {
   // Phone Management
   // ============================================================================
 
-  async getPhoneNumber(): Promise<PhoneNumberResponse > {
+  async getPhoneNumber(): Promise<PhoneNumberResponse> {
     return this.request<PhoneNumberResponse>('/account/phone');
   }
 
   async updatePhoneNumber(phone: string): Promise<
-    PhoneNumberResponse > {
+    PhoneNumberResponse> {
     return this.request<PhoneNumberResponse>(
       '/account/phone',
       {
@@ -380,7 +380,7 @@ export class AllauthClient {
     );
   }
 
-  async removePhoneNumber(): Promise<{ status: 200 } > {
+  async removePhoneNumber(): Promise<{ status: 200 }> {
     return this.request<{ status: 200 }>(
       '/account/phone',
       {
@@ -401,7 +401,7 @@ export class AllauthClient {
     );
   }
 
-  async resendPhoneVerification(): Promise<{ status: 200 } > {
+  async resendPhoneVerification(): Promise<{ status: 200 }> {
     return this.request<{ status: 200 }>(
       '/auth/phone/verify/resend',
       {
@@ -427,7 +427,7 @@ export class AllauthClient {
   }
 
   async getPasswordResetInfo(key: string): Promise<
-    PasswordResetInfoResponse > {
+    PasswordResetInfoResponse> {
     return this.request<PasswordResetInfoResponse>(
       `/auth/password/reset?key=${encodeURIComponent(key)}`
     );
@@ -446,7 +446,7 @@ export class AllauthClient {
   }
 
   async changePassword(data: PasswordChangeRequest): Promise<
-    { status: 200 } > {
+    { status: 200 }> {
     return this.request<{ status: 200 }>(
       '/account/password/change',
       {
@@ -465,7 +465,7 @@ export class AllauthClient {
   }
 
   async disconnectProviderAccount(data: ProviderDisconnectRequest): Promise<
-    ProviderAccountsResponse > {
+    ProviderAccountsResponse> {
     return this.request<ProviderAccountsResponse>(
       '/account/providers',
       {
@@ -484,8 +484,17 @@ export class AllauthClient {
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = url;
-    
-    const fields = { provider, callback_url: callbackUrl, process };
+
+    let csrfmiddlewaretoken='';
+
+    if (this.csrfTokenUrl) {
+      csrfmiddlewaretoken = await this.fetchCSRFToken() || '';
+    } else {
+      // Otherwise, try to get it from cookies (for Django-served frontends)
+      csrfmiddlewaretoken = await this.storage.getCSRFToken() || '';
+    }
+    const fields = { provider, callback_url: callbackUrl, process, csrfmiddlewaretoken };
+
     Object.entries(fields).forEach(([key, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
@@ -493,7 +502,9 @@ export class AllauthClient {
       input.value = value;
       form.appendChild(input);
     });
-    
+
+
+
     document.body.appendChild(form);
     form.submit();
   }
@@ -510,7 +521,7 @@ export class AllauthClient {
     );
   }
 
-  async getProviderSignup(): Promise<ProviderSignupResponse > {
+  async getProviderSignup(): Promise<ProviderSignupResponse> {
     return this.request<ProviderSignupResponse>(
       '/auth/provider/signup'
     );
@@ -545,7 +556,7 @@ export class AllauthClient {
   }
 
   async activateTOTP(data: TOTPActivateRequest): Promise<
-    TOTPAuthenticatorResponse > {
+    TOTPAuthenticatorResponse> {
     return this.request<TOTPAuthenticatorResponse>(
       '/account/authenticators/totp',
       {
@@ -555,7 +566,7 @@ export class AllauthClient {
     );
   }
 
-  async deactivateTOTP(): Promise<{ status: 200 } > {
+  async deactivateTOTP(): Promise<{ status: 200 }> {
     return this.request<{ status: 200 }>(
       '/account/authenticators/totp',
       {
@@ -573,7 +584,7 @@ export class AllauthClient {
   }
 
   async regenerateRecoveryCodes(): Promise<
-    SensitiveRecoveryCodesAuthenticatorResponse > {
+    SensitiveRecoveryCodesAuthenticatorResponse> {
     return this.request<SensitiveRecoveryCodesAuthenticatorResponse>(
       '/account/authenticators/recovery-codes',
       {
@@ -594,7 +605,7 @@ export class AllauthClient {
     );
   }
 
-  async mfaReauthenticate(): Promise<AuthenticatedResponse > {
+  async mfaReauthenticate(): Promise<AuthenticatedResponse> {
     return this.request<AuthenticatedResponse>(
       '/auth/2fa/reauthenticate',
       {
@@ -612,12 +623,12 @@ export class AllauthClient {
       body: JSON.stringify(data),
     });
     const result = await response.json();
-    
+
     // For error responses, throw the error so TanStack Query treats it as a failure
     if (!response.ok && result.errors) {
       throw result;
     }
-    
+
     return result as AuthenticatedResponse;
   }
 
@@ -626,7 +637,7 @@ export class AllauthClient {
   // ============================================================================
 
   async getWebAuthnSignupOptions(): Promise<
-    WebAuthnCredentialCreationOptions > {
+    WebAuthnCredentialCreationOptions> {
     return this.request<WebAuthnCredentialCreationOptions>(
       '/auth/webauthn/signup'
     );
@@ -645,7 +656,7 @@ export class AllauthClient {
   }
 
   async getWebAuthnLoginOptions(): Promise<
-    WebAuthnCredentialRequestOptions > {
+    WebAuthnCredentialRequestOptions> {
     return this.request<WebAuthnCredentialRequestOptions>(
       '/auth/webauthn/login'
     );
@@ -664,7 +675,7 @@ export class AllauthClient {
   }
 
   async getWebAuthnAuthenticateOptions(): Promise<
-    WebAuthnCredentialRequestOptions > {
+    WebAuthnCredentialRequestOptions> {
     return this.request<WebAuthnCredentialRequestOptions>(
       '/auth/webauthn/authenticate'
     );
@@ -683,14 +694,14 @@ export class AllauthClient {
   }
 
   async getWebAuthnReauthenticateOptions(): Promise<
-    WebAuthnCredentialRequestOptions > {
+    WebAuthnCredentialRequestOptions> {
     return this.request<WebAuthnCredentialRequestOptions>(
       '/auth/webauthn/reauthenticate'
     );
   }
 
   async webAuthnReauthenticate(credential: string): Promise<
-    AuthenticatedResponse > {
+    AuthenticatedResponse> {
     return this.request<AuthenticatedResponse>(
       '/auth/webauthn/reauthenticate',
       {
@@ -707,7 +718,7 @@ export class AllauthClient {
   }
 
   async deleteWebAuthnCredential(id: string): Promise<
-    AuthenticatorsResponse > {
+    AuthenticatorsResponse> {
     return this.request<AuthenticatorsResponse>(
       `/account/authenticators/webauthn`,
       {
@@ -725,7 +736,7 @@ export class AllauthClient {
     return this.request<SessionsResponse>('/auth/sessions');
   }
 
-  async deleteSession(id?: number): Promise<SessionsResponse > {
+  async deleteSession(id?: number): Promise<SessionsResponse> {
     const path = id ? `/auth/sessions` : '/auth/session';
     return this.request<SessionsResponse>(path, {
       method: 'DELETE',
