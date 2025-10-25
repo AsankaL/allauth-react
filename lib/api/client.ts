@@ -39,7 +39,7 @@ import type {
   WebAuthnSignupRequest,
   ProviderDisconnectRequest,
 } from './types';
-import { getStorage } from './storage';
+import { getCSRFToken, getStorage } from './storage';
 
 // Singleton instance
 let clientInstance: AllauthClient | null = null;
@@ -485,14 +485,8 @@ export class AllauthClient {
     form.method = 'POST';
     form.action = url;
 
-    let csrfmiddlewaretoken='';
+    let csrfmiddlewaretoken= await getCSRFToken() || '';
 
-    if (this.csrfTokenUrl) {
-      csrfmiddlewaretoken = await this.fetchCSRFToken() || '';
-    } else {
-      // Otherwise, try to get it from cookies (for Django-served frontends)
-      csrfmiddlewaretoken = await this.storage.getCSRFToken() || '';
-    }
     const fields = { provider, callback_url: callbackUrl, process, csrfmiddlewaretoken };
 
     Object.entries(fields).forEach(([key, value]) => {
